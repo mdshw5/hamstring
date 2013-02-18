@@ -6,7 +6,7 @@ This python module defines functions that will generate quaternary Hamming barco
 
 ## Usage
 
-`base4Encode(n,d)` is used to convert decimal notation *n* to quaternary notation with *d* leading digits.*example*: 
+`base4Encode(n,d)` is used to convert decimal notation *n* to quaternary notation with *d* leading digits. *example*: 
 
     base4Encode(22, 4)
     [0, 1, 1, 2]	    
