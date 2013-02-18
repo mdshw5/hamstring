@@ -10,9 +10,9 @@ Generate Hamming DNA barcodes
 -----------------
     generateBarcodes.py [-h] out
 
-arguments:
-  out         output barcode file name
-  -h, --help  show this help message and exit
+    arguments:
+      out         output barcode file name
+      -h, --help  show this help message and exit
 
 ## Hamstring Module
 
