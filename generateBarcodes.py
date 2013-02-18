@@ -10,10 +10,10 @@ def main():
     args = parser.parse_args()
     f = open(args.out, 'w')
     f.write('index base4 nucleotide gc\n')
-    for i in range(0,256):
-        x = hamstring.base4Encode(i,4)
-        y = hamstring.generateHamming(x,3)
-        z = ' '.join([str(y[a]) for a in y.keys()])
+    for i in range(0,256): ## range of decimal integers 4 ** number of data bits
+        x = hamstring.base4Encode(i,4) ## generate base4 list 
+        y = hamstring.generateHamming(x,3) ## generate hamming barcode with 3 parity bits
+        z = ' '.join([str(y[a]) for a in y.keys()]) ## format results
         f.write('{0} '.format(str(i)))
         f.write(z)
         f.write('\n')

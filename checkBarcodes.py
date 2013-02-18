@@ -11,10 +11,10 @@ def main():
     parser = argparse.ArgumentParser(description='Checksum a list of Hamming DNA barcodes')
     parser.add_argument('list', help='list of barcodes to check, one per line')
     args = parser.parse_args()
-    with open(args.list,'r') as f:
-        print 'in\tfixed\tchecksum'
+    with open(args.list,'rU') as f:
+        print 'in\tfixed\tchecksum' ## print header
         for line in f:
-            a = line.rstrip()
+            a = line.rstrip() ## remove newlines
             x = hamstring.decodeHamming(a,3)
             z = '\t'.join([a, x['nucleotide'], x['chksum']])
             print z
