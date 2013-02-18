@@ -7,11 +7,19 @@ This python module defines functions that will generate quaternary Hamming barco
 ## Usage
 
 Generate Hamming DNA barcodes
------------------
+
     generateBarcodes.py [-h] out
 
     arguments:
       out         output barcode file name
+      -h, --help  show this help message and exit
+
+Checksum a list of Hamming DNA barcodes
+
+    checkBarcodes.py [-h] list
+
+    arguments:
+      list        list of barcodes to check, one per line
       -h, --help  show this help message and exit
 
 ## Hamstring Module
@@ -47,5 +55,6 @@ Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirl
 - Implement quaternary Hamming decoding and checksumming function (Done)
 - Implement quaternary Hamming distance calculation function
 - Implement GC content calculations (Done)
+- Implement barcode list checking (Done)
 - Implement sequence redundancy calculations
 - Implement fastq barcode error correction function

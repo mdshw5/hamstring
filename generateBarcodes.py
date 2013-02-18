@@ -9,6 +9,7 @@ def main():
     parser.add_argument('out', help='output barcode file name')
     args = parser.parse_args()
     f = open(args.out, 'w')
+    f.write('index base4 nucleotide gc\n')
     for i in range(0,256):
         x = hamstring.base4Encode(i,4)
         y = hamstring.generateHamming(x,3)

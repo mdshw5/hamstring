@@ -91,7 +91,7 @@ def decodeHamming(barcode,parity):
         h4[errPos - 1] = sTrue
         hN = map(lambda x: N[x], h4)
         sN = ''.join([str(i) for i in hN])
-        errMsg = ' '.join([N[sFalse],'to',N[sTrue],'at',str(errPos)])
+        errMsg = ' '.join([N[sTrue],'>',N[sFalse],'at pos',str(errPos)])
         return {'nucleotide':sN, 'chksum':errMsg}
     else: 
         return {'nucleotide':barcode, 'chksum':'ok'}
