@@ -28,5 +28,18 @@ This python module defines functions that will generate quaternary Hamming barco
 
 ## Author Information
 
-Matt Shirley e:mdshw5'at'gmail'.'com 
+Matt Shirley 
+
+e:mdshw5'at'gmail'.'com 
+
 [http://mattshirley.com](http://mattshirley.com)
+
+## To Do
+
+Done: Implement binary to quaternary conversion
+Done: Implement quaternary Hamming encoding function
+Done: Implement quaternary Hamming decoding and checksumming function
+TD: Implement quaternary Hamming distance calculation function
+Done: Implement GC content calculations
+TD: Implement sequence redundancy calculations
+TD: Implement fastq barcode error correction function

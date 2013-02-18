@@ -2,24 +2,15 @@
 # Principles used in this script are adapted from the 2012 publication:
 # Bystrykh, L. V. (2012). Generalized DNA Barcode Design Based on Hamming Codes. 
 # PLoS ONE, 7(5), e36852. doi:10.1371/journal.pone.0036852.t004
-#
-# Todo: 
-## Done: Implement binary to quaternary conversion
-## Done: Implement quaternary Hamming encoding function
-## Done: Implement quaternary Hamming decoding and checksumming function
-## TD: Implement quaternary Hamming distance calculation function
-## TD: Implement sequence redundancy calculations and filtering
-## TD: Implement fastq barcode error correction function
 
-import os
 from __future__ import division
 
 def base4Encode(n,d):
     """Convert decimal notation to quaternary notation
+    We will use division and modulus recursively
 
     n = decimal number
     d = number of digits for quaternary representation
-    We will use division and modulus recursively
 
     """
     alphabet = [0,1,2,3]
@@ -51,9 +42,21 @@ def generateHamming(data,parity):
     hN = map(lambda x: N[x], h4)
     s4 = ''.join([str(i) for i in h4])
     sN = ''.join(hN)
-    z = {'data':data, 'parity':[p1,p2,p3], 'base4':s4, 'nucleotide':sN}
+    gc = percentGC(sN)
+    z = {'gc':gc, 'base4':s4, 'nucleotide':sN}
     return z
-    c-=1
+
+def percentGC(x):
+    """ Calculate the percent GC content of a nucleotide string
+    Return result rounded to two decimal places
+
+    x = nucleotide string
+    """
+    y = list(x)
+    l = len(y)
+    Q = {'A':0, 'C':1, 'G':1, 'T':0}
+    z = sum(map(lambda x: Q[x], y)) / l
+    return round(z,2)
 
 def smashBase(x):
     """ Smash a base4 number to base2 
@@ -87,9 +90,8 @@ def decodeHamming(barcode,parity):
             sTrue+=4
         h4[errPos - 1] = sTrue
         hN = map(lambda x: N[x], h4)
-        return {'nucleotide':''.join([str(i) for i in hN]), 'chksum':' '.join([N[sFalse],'to',N[sTrue],'at',str(errPos)])}
+        sN = ''.join([str(i) for i in hN])
+        errMsg = ' '.join([N[sFalse],'to',N[sTrue],'at',str(errPos)])
+        return {'nucleotide':sN, 'chksum':errMsg}
     else: 
         return {'nucleotide':barcode, 'chksum':'ok'}
-
-
-
