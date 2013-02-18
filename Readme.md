@@ -6,19 +6,18 @@ This python module defines functions that will generate quaternary Hamming barco
 
 ## Usage
 
-`base4Encode(n,d)` is used to convert decimal notation to quaternary notation.
-*example*: 
+`base4Encode(n,d)` is used to convert decimal notation *n* to quaternary notation with *d* leading digits.*example*: 
 
     base4Encode(22, 4)
     [0, 1, 1, 2]	    
 
-`generateHamming(data,parity)` is used to generate DNA quaternary Hamming codes.
+`generateHamming(data,parity)` is used to generate DNA quaternary Hamming codes from list of quaternary digits *data* with *parity* number of parity bits.
 *example*:
 
     generateHamming([0,1,1,2],3)
     {'parity': [1, 1, 0], 'nucleotide': 'CCAACCG', 'data': [0, 1, 1, 2], 'base4': '1100112'}
 
-`decodeHamming(barcode,parity)` is used to decode nucleotide Hamming barcode sequence and perform error correction if needed.
+`decodeHamming(barcode,parity)` is used to decode *barcode* nucleotide Hamming string with *parity* number of parity bits, and perform error correction if needed.
 *example*:
 
     decodeHamming('CCAACCG',3)
