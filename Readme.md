@@ -6,6 +6,16 @@ This python module defines functions that will generate quaternary Hamming barco
 
 ## Usage
 
+Generate Hamming DNA barcodes
+-----------------
+    generateBarcodes.py [-h] out
+
+arguments:
+  out         output barcode file name
+  -h, --help  show this help message and exit
+
+## Hamstring Module
+
 `base4Encode(n,d)` is used to convert decimal notation *n* to quaternary notation with *d* leading digits. *example*: 
 
     base4Encode(22, 4)
@@ -28,18 +38,14 @@ This python module defines functions that will generate quaternary Hamming barco
 
 ## Author Information
 
-Matt Shirley 
-
-e:mdshw5'at'gmail'.'com 
-
-[http://mattshirley.com](http://mattshirley.com)
+Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirley.com)
 
 ## To Do
 
-Done: Implement binary to quaternary conversion
-Done: Implement quaternary Hamming encoding function
-Done: Implement quaternary Hamming decoding and checksumming function
-TD: Implement quaternary Hamming distance calculation function
-Done: Implement GC content calculations
-TD: Implement sequence redundancy calculations
-TD: Implement fastq barcode error correction function
+- Implement binary to quaternary conversion (Done)
+- Implement quaternary Hamming encoding function (Done)
+- Implement quaternary Hamming decoding and checksumming function (Done)
+- Implement quaternary Hamming distance calculation function
+- Implement GC content calculations (Done)
+- Implement sequence redundancy calculations
+- Implement fastq barcode error correction function
