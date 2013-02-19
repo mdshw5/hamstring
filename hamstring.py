@@ -82,35 +82,36 @@ def decodeHamming(barcode,parity):
     """
     d = len(barcode) - parity
     hN = list(barcode)
-    if any('N' in s for s in hN):
-        fail = 1
     Q = {'A':0, 'C':1, 'G':2, 'T':3}
     N = {0:'A', 1:'C', 2:'G', 3:'T'}
-    h4 = map(lambda x: Q[x], hN)
-    p1 = sum([h4[i] for i in [0,2,4,6]]) % d
-    p2 = sum([h4[i] for i in [1,2,5,6]]) % d
-    p3 = sum([h4[i] for i in [3,4,5,6]]) % d
-    errType = max(p1,p2,p3) ## determine the type of error for later correction
-    ## determine position of error
-    binErr = map(smashBase, [p3,p2,p1]) ## get the reversed "binary" version of parity bits
-    errPos = int(''.join([str(i) for i in binErr]),2) ## error position
-    if errType != 0:
-        sFalse = h4[errPos -1]
-        sTrue = h4[errPos - 1] - errType
-        if sTrue < 0:
-            sTrue+=4
-        h4[errPos - 1] = sTrue
-        pp1 = sum([h4[i] for i in [0,2,4,6]]) % d
-        pp2 = sum([h4[i] for i in [1,2,5,6]]) % d
-        pp3 = sum([h4[i] for i in [3,4,5,6]]) % d
-        if max(pp1,pp2,pp3) > 0:
-            fail = 1
-        hN = map(lambda x: N[x], h4)
-        sN = ''.join([str(i) for i in hN])
-        errMsg = ' '.join([N[sTrue],'>',N[sFalse],'at pos',str(errPos)])
-        if fail > 0:
-            return {'nucleotide':str('N'*len(barcode)), 'chksum':bad}
-        else:
-            return {'nucleotide':sN, 'chksum':errMsg}
-    else: 
-        return {'nucleotide':barcode, 'chksum':'ok'}
+    if any('N' in s for s in hN):
+        return {'nucleotide':str('N'*len(barcode)), 'chksum':'bad'}
+    else:
+        h4 = map(lambda x: Q[x], hN)
+        p1 = sum([h4[i] for i in [0,2,4,6]]) % d
+        p2 = sum([h4[i] for i in [1,2,5,6]]) % d
+        p3 = sum([h4[i] for i in [3,4,5,6]]) % d
+        errType = max(p1,p2,p3) ## determine the type of error for later correction
+        ## determine position of error
+        binErr = map(smashBase, [p3,p2,p1]) ## get the reversed "binary" version of parity bits
+        errPos = int(''.join([str(i) for i in binErr]),2) ## error position
+        chksum = 'ok'
+        if errType != 0:
+            sFalse = h4[errPos -1]
+            sTrue = h4[errPos - 1] - errType
+            if sTrue < 0:
+                sTrue+=4
+            h4[errPos - 1] = sTrue
+            pp1 = sum([h4[i] for i in [0,2,4,6]]) % d
+            pp2 = sum([h4[i] for i in [1,2,5,6]]) % d
+            pp3 = sum([h4[i] for i in [3,4,5,6]]) % d
+            if max(pp1,pp2,pp3) > 0:
+                return {'nucleotide':str('N'*len(barcode)), 'chksum':'bad'}
+            else:
+                hN = map(lambda x: N[x], h4)
+                sN = ''.join([str(i) for i in hN])
+                chksum = ' '.join([N[sTrue],'>',N[sFalse],'at pos',str(errPos)])
+                return {'nucleotide':sN, 'chksum':chksum}
+        else: 
+            return {'nucleotide':barcode, 'chksum':chksum}
+
