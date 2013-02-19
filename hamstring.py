@@ -2,6 +2,15 @@
 # Principles used in this script are adapted from the 2012 publication:
 # Bystrykh, L. V. (2012). Generalized DNA Barcode Design Based on Hamming Codes. 
 # PLoS ONE, 7(5), e36852. doi:10.1371/journal.pone.0036852.t004
+## To Do
+#- Implement binary to quaternary conversion (Done)
+#- Implement quaternary Hamming encoding function (Done)
+#- Implement quaternary Hamming decoding and checksumming function (Done)
+#- Implement quaternary Hamming distance calculation function
+#- Implement GC content calculations (Done)
+#- Implement barcode list checking (Done)
+#- Implement sequence redundancy calculations
+#- Implement fastq barcode error correction function (Done)
 
 from __future__ import division
 

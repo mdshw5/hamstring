@@ -120,6 +120,7 @@ This work is covered under the GPLv3
 
 Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirley.com)
 
+<<<<<<< HEAD
 ## To Do
 
 - Implement binary to quaternary conversion (Done)
@@ -130,3 +131,5 @@ Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirl
 - Implement barcode list checking (Done)
 - Implement sequence redundancy calculations
 - Implement fastq barcode error correction function (Done)
+=======
+>>>>>>> Documentation edits
