@@ -131,4 +131,4 @@ Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirl
 - Implement GC content calculations (Done)
 - Implement barcode list checking (Done)
 - Implement sequence redundancy calculations
-- Implement fastq barcode error correction function
+- Implement fastq barcode error correction function (Done)
