@@ -82,6 +82,8 @@ def decodeHamming(barcode,parity):
     """
     d = len(barcode) - parity
     hN = list(barcode)
+    if any('N' in s for s in hN):
+        fail = 1
     Q = {'A':0, 'C':1, 'G':2, 'T':3}
     N = {0:'A', 1:'C', 2:'G', 3:'T'}
     h4 = map(lambda x: Q[x], hN)
@@ -98,9 +100,17 @@ def decodeHamming(barcode,parity):
         if sTrue < 0:
             sTrue+=4
         h4[errPos - 1] = sTrue
+        pp1 = sum([h4[i] for i in [0,2,4,6]]) % d
+        pp2 = sum([h4[i] for i in [1,2,5,6]]) % d
+        pp3 = sum([h4[i] for i in [3,4,5,6]]) % d
+        if max(pp1,pp2,pp3) > 0:
+            fail = 1
         hN = map(lambda x: N[x], h4)
         sN = ''.join([str(i) for i in hN])
         errMsg = ' '.join([N[sTrue],'>',N[sFalse],'at pos',str(errPos)])
-        return {'nucleotide':sN, 'chksum':errMsg}
+        if fail > 0:
+            return {'nucleotide':str('N'*len(barcode)), 'chksum':bad}
+        else:
+            return {'nucleotide':sN, 'chksum':errMsg}
     else: 
         return {'nucleotide':barcode, 'chksum':'ok'}
