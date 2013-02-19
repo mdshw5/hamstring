@@ -63,6 +63,30 @@ example output:
     +
     HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH>#DGGG@7@?##########################################
 
+**Check and fix barcodes in fastq file**
+
+    fixFastq.py [-h] list fastq out
+
+    arguments:
+      list        list of barcodes used in experiment, one per line
+      fastq       fastq file to process
+      out         name for new fastq file
+      -h, --help  show this help message and exit
+
+example input:
+
+    @HWI-EAS179_0001:5:1:7:119#0/1
+    GCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
+    +
+    HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH>#DGGG@7@?##########################################
+
+example output:
+
+    @HWI-EAS179_0001:5:1:7:119#0/1
+    CCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
+    +
+    HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH>#DGGG@7@?##########################################
+
 ## Requirements
 
 - Python 2.7
