@@ -120,16 +120,3 @@ This work is covered under the GPLv3
 
 Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirley.com)
 
-<<<<<<< HEAD
-## To Do
-
-- Implement binary to quaternary conversion (Done)
-- Implement quaternary Hamming encoding function (Done)
-- Implement quaternary Hamming decoding and checksumming function (Done)
-- Implement quaternary Hamming distance calculation function
-- Implement GC content calculations (Done)
-- Implement barcode list checking (Done)
-- Implement sequence redundancy calculations
-- Implement fastq barcode error correction function (Done)
-=======
->>>>>>> Documentation edits
