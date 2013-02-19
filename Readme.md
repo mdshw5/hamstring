@@ -30,19 +30,20 @@ example output:
 example output:
 
     in	fixed	checksum
-    TAAAAAA	AAAAAAA	A > T at pos 1
-    TTATAAC	TTATAAC	ok
-    CGAGAAG	GGAGAAG	G > C at pos 1
-    CCACAAT	CCACAAT	ok
-    AGATACA	ATATACA	T > G at pos 2
-    TGAGACC	TGAGACC	ok
+    ATAACT	CAAAACT	A > T at pos 3
+    AGAGAGA	AGAGAGA	ok
+    TCACAGC	TCACAGC	ok
+    GAACAGG	GAAAAGG	A > C at pos 4
+    CTATAGT	CTATAGT	ok
+    TTTAAAN	NNNNNNN	bad
+    NNNNNNN	NNNNNNN	bad
 
 **Tag fastq reads with a barcode (for generating a simulated dataset)**
 
     tagReads.py [-h] nb fastq out
 
     arguments:
-      nb          number of barcodes to use
+      nb          number of barcodes to generate
       fastq       fastq file to process
       out         name for new fastq file
       -h, --help  show this help message and exit
@@ -96,23 +97,26 @@ The core hamstring module has no external module dependencies and should run und
 
 `base4Encode(n,d)` is used to convert decimal notation *n* to quaternary notation with *d* leading digits. *example*: 
 
-    base4Encode(22, 4)
+    hamstring.base4Encode(22, 4)
     [0, 1, 1, 2]	    
 
 `generateHamming(data,parity)` is used to generate DNA quaternary Hamming codes from list of quaternary digits *data* with *parity* number of parity bits.
 *example*:
 
-    generateHamming([0,1,1,2],3)
+    hamstring.generateHamming([0,1,1,2],3)
     {'parity': [1, 1, 0], 'nucleotide': 'CCAACCG', 'data': [0, 1, 1, 2], 'base4': '1100112'}
 
 `decodeHamming(barcode,parity)` is used to decode *barcode* nucleotide Hamming string with *parity* number of parity bits, and perform error correction if needed.
 *example*:
 
-    decodeHamming('CCAACCG',3)
+    hamstring.decodeHamming('CCAACCG',3)
     {'nucleotide': 'CCAACCG', 'chksum': 'ok'}
 
-    decodeHamming('CCATCCG',3)
+    hamstring.decodeHamming('CCATCCG',3)
     {'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
+
+		hamstring.decodeHamming('CCANCCG',3)
+		{'nucleotide': 'NNNNNNN', 'chksum': 'bad'}
 
 ## License Information
 

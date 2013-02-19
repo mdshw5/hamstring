@@ -14,7 +14,7 @@ def main():
     """
     parser = argparse.ArgumentParser(description='Tag fastq reads with a barcode')
 #    parser.add_argument('e', help='error rate for single barcode base errors. e.g. 0.10')
-    parser.add_argument('nb', help='number of barcodes to use')
+    parser.add_argument('nb', help='number of barcodes to generate')
     parser.add_argument('fastq', help='fastq file to process')
     parser.add_argument('out', help='name for new fastq file')
     args = parser.parse_args()
