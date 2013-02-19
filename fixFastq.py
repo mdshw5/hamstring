@@ -27,7 +27,7 @@ def main():
     parser.add_argument('list', help='list of barcodes used in experiment, one per line')
     parser.add_argument('fastq', help='fastq file to process')
     parser.add_argument('out', help='name for new fastq file')
-    parser.add_argument('-s', '--strict', help='change all barcodes not in list to \'N\'')
+    parser.add_argument('-s', '--strict', action="store_true", help='change all barcodes not in list to \'N\'')
     args = parser.parse_args()
     n = 7 ## nucleotide length of barcode sequence
     ## open the list of barcodes and read them into a list object
