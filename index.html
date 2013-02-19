@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Hamstring : Tools for generating and decoding error-correcting DNA barcodes" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Hamstring</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/mdshw5/hamstring">View on GitHub</a>
+
+          <h1 id="project_title">Hamstring</h1>
+          <h2 id="project_tagline">Tools for generating and decoding error-correcting DNA barcodes</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/mdshw5/hamstring/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/mdshw5/hamstring/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This python module generates, checks, and corrects quaternary Hamming barcodes. The theory for generating quaternary (DNA) Hamming barcodes comes from the publication <a href="http://www.plosone.org/article/info:doi/10.1371/journal.pone.0036852">Bystrykh, L. V. (2012). Generalized DNA Barcode Design Based on Hamming Codes. PLoS ONE</a>. Currently, the <code>hamstring</code> module only works with Hamming7,4 encoding, but may be generalized to other sizes of data and parity bits. </p>
+
+<h2>Usage</h2>
+
+<p><strong>Generate Hamming DNA barcodes</strong></p>
+
+<pre><code>generateBarcodes.py [-h] out
+
+arguments:
+  out         output barcode file name
+  -h, --help  show this help message and exit
+</code></pre>
+
+<p>example output:</p>
+
+<pre><code>index base4 nucleotide gc
+0 0000000 AAAAAAA 0.0
+1 3303001 TTATAAC 0.14
+2 2202002 GGAGAAG 0.57
+3 1101003 CCACAAT 0.43
+4 0303010 ATATACA 0.14
+</code></pre>
+
+<p><strong>Checksum a list of Hamming DNA barcodes</strong></p>
+
+<pre><code>checkBarcodes.py [-h] list
+
+arguments:
+  list        list of barcodes to check, one per line
+  -h, --help  show this help message and exit
+</code></pre>
+
+<p>example output:</p>
+
+<pre><code>in  fixed   checksum
+ATAACT  CAAAACT A &gt; T at pos 3
+AGAGAGA AGAGAGA ok
+TCACAGC TCACAGC ok
+GAACAGG GAAAAGG A &gt; C at pos 4
+CTATAGT CTATAGT ok
+TTTAAAN NNNNNNN bad
+NNNNNNN NNNNNNN bad
+</code></pre>
+
+<p><strong>Tag fastq reads with a barcode (for generating a simulated dataset)</strong></p>
+
+<pre><code>tagReads.py [-h] nb fastq out
+
+arguments:
+  nb          number of barcodes to generate
+  fastq       fastq file to process
+  out         name for new fastq file
+  -h, --help  show this help message and exit
+</code></pre>
+
+<p>example input:</p>
+
+<pre><code>@HWI-EAS179_0001:5:1:7:119#0/1
+CAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
++
+HIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?##########################################
+</code></pre>
+
+<p>example output:</p>
+
+<pre><code>@HWI-EAS179_0001:5:1:7:119#0/1
+CCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
++
+HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?##########################################
+</code></pre>
+
+<p><strong>Check and fix barcodes in fastq file</strong></p>
+
+<pre><code>fixFastq.py [-h] list fastq out
+
+arguments:
+  list        list of barcodes used in experiment, one per line
+  fastq       fastq file to process
+  out         name for new fastq file
+  -h, --help  show this help message and exit
+</code></pre>
+
+<p>example input:</p>
+
+<pre><code>@HWI-EAS179_0001:5:1:7:119#0/1
+GCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
++
+HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?##########################################
+</code></pre>
+
+<p>example output:</p>
+
+<pre><code>@HWI-EAS179_0001:5:1:7:119#0/1
+CCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
++
+HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?##########################################
+</code></pre>
+
+<h2>Requirements</h2>
+
+<ul>
+<li>Python 2.7</li>
+<li>BioPython module required for fixFastq.py</li>
+</ul><h2>Hamstring Module</h2>
+
+<p>The core hamstring module has no external module dependencies and should run under any OS.</p>
+
+<p><code>base4Encode(n,d)</code> is used to convert decimal notation <em>n</em> to quaternary notation with <em>d</em> leading digits. <em>example</em>: </p>
+
+<pre><code>hamstring.base4Encode(22, 4)
+[0, 1, 1, 2]        
+</code></pre>
+
+<p><code>generateHamming(data,parity)</code> is used to generate DNA quaternary Hamming codes from list of quaternary digits <em>data</em> with <em>parity</em> number of parity bits.
+<em>example</em>:</p>
+
+<pre><code>hamstring.generateHamming([0,1,1,2],3)
+{'parity': [1, 1, 0], 'nucleotide': 'CCAACCG', 'data': [0, 1, 1, 2], 'base4': '1100112'}
+</code></pre>
+
+<p><code>decodeHamming(barcode,parity)</code> is used to decode <em>barcode</em> nucleotide Hamming string with <em>parity</em> number of parity bits, and perform error correction if needed.
+<em>example</em>:</p>
+
+<pre><code>hamstring.decodeHamming('CCAACCG',3)
+{'nucleotide': 'CCAACCG', 'chksum': 'ok'}
+
+hamstring.decodeHamming('CCATCCG',3)
+{'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
+
+hamstring.decodeHamming('CCANCCG',3)
+{'nucleotide': 'NNNNNNN', 'chksum': 'bad'}
+</code></pre>
+
+<h2>License Information</h2>
+
+<p>This work is covered under the GPLv3</p>
+
+<p>Matt Shirley - mdshw5'at'gmail'.'com - <a href="http://mattshirley.com">http://mattshirley.com</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Hamstring maintained by <a href="https://github.com/mdshw5">mdshw5</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
