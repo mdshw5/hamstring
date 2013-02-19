@@ -64,12 +64,13 @@ example output:
 
 **Check and fix barcodes in fastq file**
 
-    fixFastq.py [-h] list fastq out
+    fixFastq.py [-h] [-s] list fastq out
 
     arguments:
       list        list of barcodes used in experiment, one per line
       fastq       fastq file to process
       out         name for new fastq file
+      -s, --strict  change all barcodes not in list to 'N'
       -h, --help  show this help message and exit
 
 example input:
