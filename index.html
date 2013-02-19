@@ -31,9 +31,13 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>This python module generates, checks, and corrects quaternary Hamming barcodes. The theory for generating quaternary (DNA) Hamming barcodes comes from the publication <a href="http://www.plosone.org/article/info:doi/10.1371/journal.pone.0036852">Bystrykh, L. V. (2012). Generalized DNA Barcode Design Based on Hamming Codes. PLoS ONE</a>. Currently, the <code>hamstring</code> module only works with Hamming7,4 encoding, but may be generalized to other sizes of data and parity bits. </p>
+        <p>Hamstring is a python module for generating, checking, and correcting quaternary Hamming barcodes. The theory for generating quaternary (DNA) Hamming barcodes comes from the publication <a href="http://www.plosone.org/article/info:doi/10.1371/journal.pone.0036852">Bystrykh, L. V. (2012). Generalized DNA Barcode Design Based on Hamming Codes. PLoS ONE</a>. Currently, the <code>hamstring</code> module only works with Hamming7,4 encoding, but may be generalized to other sizes of data and parity bits. Tools are included for generating and checking individual barcodes, as well as creating and correcting barcoded fastq reads.</p>
 
-<h2>Usage</h2>
+<h2>Why do I need this?</h2>
+
+<p>Most DNA barcoding schemes are empirically designed, hand-picked sequences used to identify multiplexed or concatenated DNA samples. During replication or sequencing of these barcoded strings of DNA, errors are sometimes introduced into the barcode sequence which at best prevent positive identification, and at worst mutate the barcode sequence to represent another barcode used in the same study! Wouldn't it be great to have a way to identify this? We can apply the idea of a <a href="http://en.wikipedia.org/wiki/Checksum">checksum</a> to DNA barcoding to provide robust detection and correction of mutated barcodes.</p>
+
+<h2>Examples</h2>
 
 <p><strong>Generate Hamming DNA barcodes</strong></p>
 
@@ -127,41 +131,6 @@ HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?####################################
 CCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNNNNN
 +
 HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?##########################################
-</code></pre>
-
-<h2>Requirements</h2>
-
-<ul>
-<li>Python 2.7</li>
-<li>BioPython module required for fixFastq.py</li>
-</ul><h2>Hamstring Module</h2>
-
-<p>The core hamstring module has no external module dependencies and should run under any OS.</p>
-
-<p><code>base4Encode(n,d)</code> is used to convert decimal notation <em>n</em> to quaternary notation with <em>d</em> leading digits. <em>example</em>: </p>
-
-<pre><code>hamstring.base4Encode(22, 4)
-[0, 1, 1, 2]        
-</code></pre>
-
-<p><code>generateHamming(data,parity)</code> is used to generate DNA quaternary Hamming codes from list of quaternary digits <em>data</em> with <em>parity</em> number of parity bits.
-<em>example</em>:</p>
-
-<pre><code>hamstring.generateHamming([0,1,1,2],3)
-{'parity': [1, 1, 0], 'nucleotide': 'CCAACCG', 'data': [0, 1, 1, 2], 'base4': '1100112'}
-</code></pre>
-
-<p><code>decodeHamming(barcode,parity)</code> is used to decode <em>barcode</em> nucleotide Hamming string with <em>parity</em> number of parity bits, and perform error correction if needed.
-<em>example</em>:</p>
-
-<pre><code>hamstring.decodeHamming('CCAACCG',3)
-{'nucleotide': 'CCAACCG', 'chksum': 'ok'}
-
-hamstring.decodeHamming('CCATCCG',3)
-{'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
-
-hamstring.decodeHamming('CCANCCG',3)
-{'nucleotide': 'NNNNNNN', 'chksum': 'bad'}
 </code></pre>
 
 <h2>License Information</h2>
