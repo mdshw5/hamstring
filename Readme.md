@@ -118,9 +118,7 @@ The core hamstring module has no external module dependencies and should run und
     hamstring.decodeHamming('CCANCCG',3)
     {'nucleotide': 'NNNNNNN', 'chksum': 'bad'}
 
-## License Information
-
-This work is covered under the GPLv3
+## Author
 
 Matt Shirley - mdshw5'at'gmail'.'com - [http://mattshirley.com](http://mattshirley.com)
 
