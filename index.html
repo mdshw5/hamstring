@@ -37,7 +37,7 @@
 
 <p>Most DNA barcoding schemes are empirically designed, hand-picked sequences used to identify multiplexed or concatenated DNA samples. During replication or sequencing of these barcoded strings of DNA, errors are sometimes introduced into the barcode sequence which at best prevent positive identification, and at worst mutate the barcode sequence to represent another barcode used in the same study! Wouldn't it be great to have a way to identify this? We can apply the idea of a <a href="http://en.wikipedia.org/wiki/Checksum">checksum</a> to DNA barcoding to provide robust detection and correction of mutated barcodes.</p>
 
-<h2>Examples</h2>
+<h2>Usage</h2>
 
 <p><strong>Generate Hamming DNA barcodes</strong></p>
 
@@ -70,7 +70,7 @@ arguments:
 <p>example output:</p>
 
 <pre><code>in  fixed   checksum
-CATAACT CAAAACT A &gt; T at pos 3
+ATAACT  CAAAACT A &gt; T at pos 3
 AGAGAGA AGAGAGA ok
 TCACAGC TCACAGC ok
 GAACAGG GAAAAGG A &gt; C at pos 4
@@ -81,9 +81,10 @@ NNNNNNN NNNNNNN bad
 
 <p><strong>Tag fastq reads with a barcode (for generating a simulated dataset)</strong></p>
 
-<pre><code>tagReads.py [-h] nb fastq out
+<pre><code>tagReads.py [-h] e nb fastq out
 
 arguments:
+  e       error rate for single barcode base errors. e.g. 0.10
   nb          number of barcodes to generate
   fastq       fastq file to process
   out         name for new fastq file
@@ -108,12 +109,13 @@ HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?####################################
 
 <p><strong>Check and fix barcodes in fastq file</strong></p>
 
-<pre><code>fixFastq.py [-h] list fastq out
+<pre><code>fixFastq.py [-h] [-s] list fastq out
 
 arguments:
   list        list of barcodes used in experiment, one per line
   fastq       fastq file to process
   out         name for new fastq file
+  -s, --strict  change all barcodes not in list to 'N'
   -h, --help  show this help message and exit
 </code></pre>
 
@@ -133,9 +135,41 @@ CCATGGCCAGGGCGCGAATGNTTTGAGAGGGANATTGGAAANNNNNGATAGANNGGNCTATNNTGNNNNNNNNNNNNNNN
 HHHHHHHHIHHHGHHHFDHH#EHHH?HHHDH&gt;#DGGG@7@?##########################################
 </code></pre>
 
-<h2>License Information</h2>
+<h2>Requirements</h2>
 
-<p>This work is covered under the GPLv3</p>
+<ul>
+<li>Python 2.7</li>
+</ul><h2>Hamstring Module</h2>
+
+<p>The core hamstring module has no external module dependencies and should run under any OS.</p>
+
+<p><code>base4Encode(n,d)</code> is used to convert decimal notation <em>n</em> to quaternary notation with <em>d</em> leading digits. <em>example</em>: </p>
+
+<pre><code>hamstring.base4Encode(22, 4)
+[0, 1, 1, 2]        
+</code></pre>
+
+<p><code>generateHamming(data,parity)</code> is used to generate DNA quaternary Hamming codes from list of quaternary digits <em>data</em> with <em>parity</em> number of parity bits.
+<em>example</em>:</p>
+
+<pre><code>hamstring.generateHamming([0,1,1,2],3)
+{'parity': [1, 1, 0], 'nucleotide': 'CCAACCG', 'data': [0, 1, 1, 2], 'base4': '1100112'}
+</code></pre>
+
+<p><code>decodeHamming(barcode,parity)</code> is used to decode <em>barcode</em> nucleotide Hamming string with <em>parity</em> number of parity bits, and perform error correction if needed.
+<em>example</em>:</p>
+
+<pre><code>hamstring.decodeHamming('CCAACCG',3)
+{'nucleotide': 'CCAACCG', 'chksum': 'ok'}
+
+hamstring.decodeHamming('CCATCCG',3)
+{'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
+
+hamstring.decodeHamming('CCANCCG',3)
+{'nucleotide': 'NNNNNNN', 'chksum': 'bad'}
+</code></pre>
+
+<h2>Author</h2>
 
 <p>Matt Shirley - mdshw5'at'gmail'.'com - <a href="http://mattshirley.com">http://mattshirley.com</a></p>
       </section>
