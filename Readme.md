@@ -40,9 +40,10 @@ example output:
 
 **Tag fastq reads with a barcode (for generating a simulated dataset)**
 
-    tagReads.py [-h] nb fastq out
+    tagReads.py [-h] e nb fastq out
 
     arguments:
+      e		  error rate for single barcode base errors. e.g. 0.10
       nb          number of barcodes to generate
       fastq       fastq file to process
       out         name for new fastq file
@@ -90,7 +91,6 @@ example output:
 ## Requirements
 
 - Python 2.7
-- BioPython module required for fixFastq.py
 
 ## Hamstring Module
 
