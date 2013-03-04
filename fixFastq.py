@@ -14,8 +14,7 @@
 
 import os
 import argparse
-import hamstring
-from Bio import SeqIO
+from hamstring import *
 
 def main():
     """ Read fastq files from input file, parse barcode, calculate checksum, and write 
@@ -37,34 +36,21 @@ def main():
             barcodes.append(line.rstrip())
     f.close()
     ## open the fastq file and output file; read through, performing checksums and write corrected reads
-    o = open(args.out, 'w')
-    with open(args.fastq, 'rU') as fq:
-        for record in SeqIO.parse(fq, 'fastq'):
+    with fastqReader(args.fastq) as fq, fastqWriter(args.out) as out:
+        for record in fq:
+            barcode = record.seq[:n]
+            decode = decodeHamming(barcode,3)
             seq = list(record.seq)
-            qual = map(int,record.letter_annotations['phred_quality'])
-            qual33 = [ascii + 33 for ascii in qual]
-            qualPhred = ''.join([chr(qscore) for qscore in qual33])
-            barcode = ''.join(seq[:n])
-            decode = hamstring.decodeHamming(barcode,3)
             if (decode['chksum'] != 'ok' and any(decode['nucleotide'] in s for s in barcodes)):
                 seq[:n] = list(decode['nucleotide'])
-                messg = 'corrected ' + decode['chksum'] + ' in read ' + record.id
+                messg = 'corrected ' + decode['chksum'] + ' in read ' + record.name
                 print messg
             elif (args.strict and decode['chksum'] != 'ok' and not any(decode['nucleotide'] in s for s in barcodes)):
                 seq[:n] = list('N'*len(barcode))
-                messg = 'discarded barcode ' + barcode + ' in read ' + record.id
+                messg = 'discarded barcode ' + barcode + ' in read ' + record.name
                 print messg
-            o.write('@{0}'.format(record.id))
-            o.write('\n')
-            o.write(''.join(seq))
-            o.write('\n')
-            o.write('+')
-            o.write('\n')
-            o.write(str(qualPhred))
-            o.write('\n')
-    fq.close()
-    o.close()
-            
+            record.seq = ''.join(seq)
+            out.write(record)
 
 if __name__ == "__main__":
     main()

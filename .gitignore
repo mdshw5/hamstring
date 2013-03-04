@@ -1,12 +1,10 @@
 
 *.pyc
+*~
+\#*
 
-test
 
-list
 
-list_mut
 
-*.fastq
 
-data/barcodes
+

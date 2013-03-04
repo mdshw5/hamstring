@@ -14,9 +14,8 @@
 
 import os
 import argparse
-import hamstring
 import random
-from Bio import SeqIO, Seq
+from hamstring import *
 
 def main():
     """ Read a fastq file and prepend a barcode to each read. Mutate the barcode e % of the time
@@ -26,36 +25,32 @@ def main():
     TODO: implement barcode mutation and better fastq output
     """
     parser = argparse.ArgumentParser(description='Tag fastq reads with a barcode')
-#    parser.add_argument('e', help='error rate for single barcode base errors. e.g. 0.10')
-    parser.add_argument('nb', help='number of barcodes to generate')
-    parser.add_argument('fastq', help='fastq file to process')
-    parser.add_argument('out', help='name for new fastq file')
+    parser.add_argument('e', type=float, help='error rate for single barcode base errors. e.g. 0.10')
+    parser.add_argument('nb', type=int, help='number of barcodes to generate')
+    parser.add_argument('fastq', type=str, help='fastq file to process')
+    parser.add_argument('out', type=str, help='name for new fastq file')
     args = parser.parse_args()
     ## generate barcodes 
-    rNum = random.sample(range(0,256),int(args.nb))
-    b4 = [hamstring.base4Encode(decimal,4) for decimal in rNum]
-    barcodes = [hamstring.generateHamming(data,3)['nucleotide'] for data in b4]        
+    rn = random.sample(range(0,256),int(args.nb))
+    b4 = [base4Encode(decimal,4) for decimal in rn]
+    barcodes = [generateHamming(data,3)['nucleotide'] for data in b4]
+    print 'Barcodes:\n' + '\n'.join(barcodes)
+    ## generate weighted distribution
+    wd = [True] * int(100 * args.e) + [False] * (100 - (100 * int(args.e)))
     ## open the fastq file and output file; read through, prepending barcodes
-    o = open(args.out, 'w')
-    with open(args.fastq, 'rU') as fq:
-        for record in SeqIO.parse(fq, 'fastq'):
-            newSeq = random.choice(barcodes) + record.seq
-            qual = map(int,record.letter_annotations['phred_quality'])
-            qual33 = [ascii + 33 for ascii in qual]
-            qualText = ''.join([chr(qscore) for qscore in qual33])
-            newQual = 'H'*7 + qualText
-            ## really need to do something better than this for outfile
-            o.write('@{0}'.format(record.id))
-            o.write('\n')
-            o.write(str(newSeq))
-            o.write('\n')
-            o.write('+')
-            o.write('\n')
-            o.write(str(newQual))
-            o.write('\n')
-    fq.close()
-    o.close()
-            
+    with fastqReader(args.fastq) as fq, fastqWriter(args.out) as out:
+        for record in fq:
+            barcode = random.choice(barcodes)
+            if random.choice(wd) is True:
+                pos = random.choice([0,1,2,3,4,5,6])
+                bases = ['A','C','G','T']
+                bases = [b for b in bases if not b.endswith(barcode[pos])]
+                barcode = list(barcode)
+                barcode[pos] = random.choice(bases)
+                barcode = ''.join(barcode)
+            record.seq = barcode + record.seq
+            record.qual = 'H'*7 + record.qual
+            out.write(record)
 
 if __name__ == "__main__":
     main()

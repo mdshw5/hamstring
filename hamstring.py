@@ -26,16 +26,115 @@
 #- Implement barcode list checking (Done)
 #- Implement sequence redundancy calculations
 #- Implement fastq barcode error correction function (Done)
+#- Implement barcode mutation rate in simulation tool
 
 from __future__ import division
 
+class read(object):
+    """
+    A class to hold features from fastq reads.
+    """
+
+    def __init__(self, name, seq, strand, qual):
+        self.name = name
+        self.seq = seq
+        self.strand = strand
+        self.qual = qual
+        self.dict = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N'}
+
+    def __getitem__(self, key):
+        return self.__class__(self.name, self.seq[key], self.strand, self.qual[key])
+
+    def index(self):
+        return range(len(self.seq))
+
+    def seqlen(self):
+        return len(self.seq)
+
+    def reverse(self):
+        """ Reverse the order of self """
+        return self.__class__(self.name, self.seq[::-1], self.strand, self.qual[::-1])
+
+    def complement(self):
+        """ Take the compliment of read.seq """
+        compseq = ''.join(map(lambda x: self.dict[x], self.seq))
+        return self.__class__(self.name, compseq, self.strand, self.qual)
+
+    def revcomplement(self):
+        """ Take the reverse compliment of read.seq """
+        revcompseq = ''.join(map(lambda x: self.dict[x], self.seq))[::-1]
+        return self.__class__(self.name, revcompseq, self.strand, self.qual[::-1])
+
+    def trim3(self, start, end):
+        """ Trim all read class elements from the 3' end to the start of the adapter sequence alignment """
+        self.seq, self.qual = self.seq[:start], self.qual[:start]
+        return self
+
+    def trim5(self, start, end):
+        """ Trim all read class elements from the 5' start to the end  of the adapter sequence alignment """
+        self.seq, self.qual = self.seq[end:], self.qual[end:]
+        return self
+
+    def trim53(self, start, end):
+        """ Trim all read class elements to the 1-based 'trim' values"""
+        self.seq, self.qual = self.seq[start:end], self.qual[start:end]
+        return self
+
+class fastqReader:
+    """ 
+    A class to read the name, sequence, strand and qualities from a fastq file
+
+    file = the file name of a fastq file
+    """
+    def __init__(self, file):
+        self.file = open(file, 'rU')
+        self.read = read
+
+    def __iter__(self):
+        """ 
+        Return read class: (name, sequence, strand, qualities).
+        """
+        for i, line in enumerate(self.file):
+            if i % 4 == 0:
+                name = line.strip()[1:]
+            elif i % 4 == 1:
+                sequence = line.strip()
+            elif i % 4 == 2:
+                strand = line.strip()
+            elif i % 4 == 3:
+                qualities = line.rstrip('\n\r')
+                yield self.read(name, sequence, strand, qualities)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.file.close()
+
+class fastqWriter:
+    """ Take a read class object and file name, open file and write read """
+    def __init__(self, file):
+        self.file = open(file, 'w')
+
+    def write(self, read):
+        self.file.write('@' + read.name.split('/')[0] + '\n')
+        self.file.write(read.seq + '\n')
+        self.file.write(read.strand + '\n')
+        self.file.write(read.qual + '\n')
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.file.close()
+
+
 def base4Encode(n,d):
-    """Convert decimal notation to quaternary notation
+    """ Convert decimal notation to quaternary notation
     We will use division and modulus recursively
 
     n = decimal number
     d = number of digits for quaternary representation
-
     """
     alphabet = [0,1,2,3]
     quat = []
@@ -49,11 +148,9 @@ def base4Encode(n,d):
     return quat
   
 def generateHamming(data,parity):
-    """Generate quaternary Hamming codes
-
+    """ Generate quaternary Hamming codes
     data = quaternary number list
     parity = number of parity bits to implement
-
     """
     d = len(data) ## number of coding bits
     N = ['A','C','G','T'] ## nucleotide dictionary
@@ -92,9 +189,7 @@ def smashBase(x):
     return x
 
 def decodeHamming(barcode,parity):
-    """ Decode nucleotide Hamming barcode sequence and perform error correction
-
-    """
+    """ Decode nucleotide Hamming barcode sequence and perform error correction """
     d = len(barcode) - parity
     hN = list(barcode)
     Q = {'A':0, 'C':1, 'G':2, 'T':3}
