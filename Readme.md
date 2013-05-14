@@ -40,13 +40,13 @@ example output:
 
 **Tag fastq reads with a barcode (for generating a simulated dataset)**
 
-    tagReads.py [-h] e nb fastq out
+    tagReads.py [-h] -e nb fastq out
 
     arguments:
-      e		  error rate for single barcode base errors. e.g. 0.10
       nb          number of barcodes to generate
       fastq       fastq file to process
       out         name for new fastq file
+      -e, --erate error rate for single barcode base errors. default=0.05
       -h, --help  show this help message and exit
 
 example input:

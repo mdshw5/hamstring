@@ -22,13 +22,12 @@ def main():
     for nb barcodes.
     e = percent single error rate in barcode
     nb = number of barcodes in experiment
-    TODO: implement barcode mutation and better fastq output
     """
     parser = argparse.ArgumentParser(description='Tag fastq reads with a barcode')
-    parser.add_argument('e', type=float, help='error rate for single barcode base errors. e.g. 0.10')
     parser.add_argument('nb', type=int, help='number of barcodes to generate')
     parser.add_argument('fastq', type=str, help='fastq file to process')
     parser.add_argument('out', type=str, help='name for new fastq file')
+    parser.add_argument('-e', '--erate', type=float, default=0.05 help='error rate for single barcode base errors. default=0.05')
     args = parser.parse_args()
     ## generate barcodes 
     rn = random.sample(range(0,256),int(args.nb))
