@@ -30,7 +30,7 @@ example output:
 example output:
 
     in	fixed	checksum
-    ATAACT	CAAAACT	A > T at pos 3
+    CATAACT	CAAAACT	A > T at pos 3
     AGAGAGA	AGAGAGA	ok
     TCACAGC	TCACAGC	ok
     GAACAGG	GAAAAGG	A > C at pos 4
