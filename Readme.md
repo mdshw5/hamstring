@@ -11,6 +11,9 @@ This python module generates, checks, and corrects quaternary Hamming barcodes. 
     arguments:
       out         output barcode file name
       -h, --help  show this help message and exit
+      -p PARITY, --parity PARITY
+                        length of the parity bit e.g. 4 for Hamming8,4.
+                        default=3
 
 example output:
 
@@ -28,6 +31,9 @@ example output:
     arguments:
       list        list of barcodes to check, one per line
       -h, --help  show this help message and exit
+      -p PARITY, --parity PARITY
+                        length of the parity bit e.g. 4 for Hamming8,4.
+                        default=3
 
 example output:
 
@@ -49,6 +55,9 @@ example output:
       fastq       fastq file to process
       out         name for new fastq file
       -e, --erate error rate for single barcode base errors. default=0.05
+      -p PARITY, --parity PARITY
+                        length of the parity bit e.g. 4 for Hamming8,4.
+                        default=3
       -h, --help  show this help message and exit
 
 example input:
@@ -107,7 +116,10 @@ The core hamstring module has no external module dependencies and should run und
 *example*:
 
     hamstring.generateHamming([0,1,1,2],3)
-    {'parity': [1, 1, 0], 'nucleotide': 'CCAACCG', 'data': [0, 1, 1, 2], 'base4': '1100112'}
+    {'base4': '1100112', 'nucleotide': 'CCAACCG', 'gc': 0.71}
+
+    hamstring.generateHamming([0,1,1,2],4)
+    {'base4': '11001122', 'nucleotide': 'CCAACCGG', 'gc': 0.75}
 
 `decodeHamming(barcode,parity)` is used to decode *barcode* nucleotide Hamming string with *parity* number of parity bits, and perform error correction if needed.
 *example*:
@@ -115,11 +127,17 @@ The core hamstring module has no external module dependencies and should run und
     hamstring.decodeHamming('CCAACCG',3)
     {'nucleotide': 'CCAACCG', 'chksum': 'ok'}
 
+    hamstring.decodeHamming('CCAACCGG',4)
+    {'nucleotide': 'CCAACCGG', 'chksum': 'ok'}
+
     hamstring.decodeHamming('CCATCCG',3)
     {'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
 
-    hamstring.decodeHamming('CCANCCG',3)
-    {'nucleotide': 'NNNNNNN', 'chksum': 'bad'}
+    hamstring.decodeHamming('CCATCCGG',4)
+    {'nucleotide': 'CCAACCGG', 'chksum': 'A > T at pos 4'}
+
+    hamstring.decodeHamming('TCATCCGG',4)
+    {'nucleotide': 'NNNNNNNN', 'chksum': 'bad'}
 
 ## Author
 

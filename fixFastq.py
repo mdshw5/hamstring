@@ -16,21 +16,35 @@ import os
 import argparse
 from hamstring import *
 
+
 def main():
-    """ Read fastq files from input file, parse barcode, calculate checksum, and write 
-    a new, corrected fastq file as well as a log of operations. Note that the barcode is 
+    """ Read fastq files from input file, parse barcode, calculate checksum, and write
+    a new, corrected fastq file as well as a log of operations. Note that the barcode is
     expected to be the first n nucleotides from the 5' end.
 
     """
-    parser = argparse.ArgumentParser(description='Check and fix barcodes in fastq file')
-    parser.add_argument('list', help='list of barcodes used in experiment, one per line')
+    parser = argparse.ArgumentParser(
+        description='Check and fix barcodes in fastq file')
+    parser.add_argument(
+        'list', help='list of barcodes used in experiment, one per line')
     parser.add_argument('fastq', help='fastq file to process')
     parser.add_argument('out', help='name for new fastq file')
-    parser.add_argument('-s', '--strict', action="store_true", help='change all barcodes not in list to \'N\'')
+    parser.add_argument(
+        '-s',
+        '--strict',
+        action="store_true",
+        help='change all barcodes not in list to \'N\'')
+    parser.add_argument(
+        '-p',
+        '--parity',
+        type=int,
+        default=3,
+        help=
+        'length of the parity bit e.g. 4 for Hamming8,4. default=%(default)s')
     args = parser.parse_args()
-    n = 7 ## nucleotide length of barcode sequence
+    n = 7  ## nucleotide length of barcode sequence
     ## open the list of barcodes and read them into a list object
-    with open(args.list,'rU') as f:
+    with open(args.list, 'rU') as f:
         barcodes = []
         for line in f:
             barcodes.append(line.rstrip())
@@ -39,18 +53,21 @@ def main():
     with fastqReader(args.fastq) as fq, fastqWriter(args.out) as out:
         for record in fq:
             barcode = record.seq[:n]
-            decode = decodeHamming(barcode,3)
+            decode = decodeHamming(barcode, args.parity)
             seq = list(record.seq)
-            if (decode['chksum'] != 'ok' and any(decode['nucleotide'] in s for s in barcodes)):
+            if (decode['chksum'] != 'ok'
+                    and any(decode['nucleotide'] in s for s in barcodes)):
                 seq[:n] = list(decode['nucleotide'])
                 messg = 'corrected ' + decode['chksum'] + ' in read ' + record.name
                 print messg
-            elif (args.strict and decode['chksum'] != 'ok' and not any(decode['nucleotide'] in s for s in barcodes)):
-                seq[:n] = list('N'*len(barcode))
+            elif (args.strict and decode['chksum'] != 'ok'
+                  and not any(decode['nucleotide'] in s for s in barcodes)):
+                seq[:n] = list('N' * len(barcode))
                 messg = 'discarded barcode ' + barcode + ' in read ' + record.name
                 print messg
             record.seq = ''.join(seq)
             out.write(record)
+
 
 if __name__ == "__main__":
     main()

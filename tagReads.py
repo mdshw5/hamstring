@@ -1,4 +1,4 @@
-#!/usr/bin/env python   
+#!/usr/bin/env python
 #
 # Copyright (C) 2013 Matt Shirley
 # This program is free software: you can redistribute it and/or modify
@@ -28,11 +28,12 @@ def main():
     parser.add_argument('fastq', type=str, help='fastq file to process')
     parser.add_argument('out', type=str, help='name for new fastq file')
     parser.add_argument('-e', '--erate', type=float, default=0.05 help='error rate for single barcode base errors. default=0.05')
+    parser.add_argument('-p', '--parity', type=int, default=3, help='length of the parity bit e.g. 4 for Hamming8,4. default=%(default)s')
     args = parser.parse_args()
-    ## generate barcodes 
+    ## generate barcodes
     rn = random.sample(range(0,256),int(args.nb))
     b4 = [base4Encode(decimal,4) for decimal in rn]
-    barcodes = [generateHamming(data,3)['nucleotide'] for data in b4]
+    barcodes = [generateHamming(data, args.parity)['nucleotide'] for data in b4]
     print 'Barcodes:\n' + '\n'.join(barcodes)
     ## generate weighted distribution
     wd = [True] * int(100 * args.e) + [False] * (100 - (100 * int(args.e)))
