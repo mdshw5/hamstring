@@ -144,7 +144,7 @@ def base4Encode(n, d):
     n = decimal number
     d = number of digits for quaternary representation
 
-    >>> hamstring.base4Encode(22, 4)
+    >>> base4Encode(22, 4)
     [0, 1, 1, 2]
     """
     alphabet = [0, 1, 2, 3]
@@ -164,10 +164,10 @@ def generateHamming(data, parity):
     data = quaternary number list
     parity = number of parity bits to implement
 
-    >>> hamstring.generateHamming([0,1,1,2],3)
+    >>> generateHamming([0,1,1,2],3)
     {'base4': '1100112', 'nucleotide': 'CCAACCG', 'gc': 0.71}
 
-    >>> hamstring.generateHamming([0,1,1,2],4)
+    >>> generateHamming([0,1,1,2],4)
     {'base4': '11001122', 'nucleotide': 'CCAACCGG', 'gc': 0.75}
     """
     d = len(data)  ## number of coding bits
@@ -219,19 +219,19 @@ def smashBase(x):
 def decodeHamming(barcode, parity):
     """ Decode nucleotide Hamming barcode sequence and perform error correction
 
-    >>> hamstring.decodeHamming('CCAACCG',3)
+    >>> decodeHamming('CCAACCG',3)
     {'nucleotide': 'CCAACCG', 'chksum': 'ok'}
 
-    >>> hamstring.decodeHamming('CCAACCGG',4)
+    >>> decodeHamming('CCAACCGG',4)
     {'nucleotide': 'CCAACCGG', 'chksum': 'ok'}
 
-    >>> hamstring.decodeHamming('CCATCCG',3)
+    >>> decodeHamming('CCATCCG',3)
     {'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
 
-    >>> hamstring.decodeHamming('CCATCCGG',4)
+    >>> decodeHamming('CCATCCGG',4)
     {'nucleotide': 'CCAACCGG', 'chksum': 'A > T at pos 4'}
 
-    >>> hamstring.decodeHamming('TCATCCGG',4)
+    >>> decodeHamming('TCATCCGG',4)
     {'nucleotide': 'NNNNNNNN', 'chksum': 'bad'}
     """
     d = len(barcode) - parity
@@ -282,3 +282,8 @@ def decodeHamming(barcode, parity):
 
         else:
             return {'nucleotide': barcode, 'chksum': chksum}
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
