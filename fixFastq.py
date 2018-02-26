@@ -14,7 +14,7 @@
 
 import os
 import argparse
-from .hamstring import *
+from hamstring import *
 
 
 def main():
