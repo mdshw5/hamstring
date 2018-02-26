@@ -28,6 +28,8 @@
 #- Implement fastq barcode error correction function (Done)
 #- Implement barcode mutation rate in simulation tool
 
+from __future__ import division
+
 
 class read(object):
     """
