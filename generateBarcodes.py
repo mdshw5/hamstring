@@ -12,9 +12,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import argparse
-import hamstring
+from . import hamstring
 
 
 def main():
@@ -35,7 +34,7 @@ def main():
                    256):  ## range of decimal integers 4 ** number of data bits
         x = hamstring.base4Encode(i, 4)  ## generate base4 list
         y = hamstring.generateHamming(x, args.parity)
-        z = ' '.join([str(y[a]) for a in y.keys()])  ## format results
+        z = ' '.join([str(y[a]) for a in list(y.keys())])  ## format results
         f.write('{0} '.format(str(i)))
         f.write(z)
         f.write('\n')

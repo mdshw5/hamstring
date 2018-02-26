@@ -14,7 +14,7 @@
 
 import os
 import argparse
-import hamstring
+from . import hamstring
 
 
 def main():
@@ -33,12 +33,12 @@ def main():
         'length of the parity bit e.g. 4 for Hamming8,4. default=%(default)s')
     args = parser.parse_args()
     with open(args.list, 'rU') as f:
-        print 'in\tfixed\tchecksum'  ## print header
+        print('in\tfixed\tchecksum')  ## print header
         for line in f:
             a = line.rstrip()  ## remove newlines
             x = hamstring.decodeHamming(a, args.parity)
             z = '\t'.join([a, x['nucleotide'], x['chksum']])
-            print z
+            print(z)
     f.close()
 
 

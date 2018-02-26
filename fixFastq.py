@@ -14,7 +14,7 @@
 
 import os
 import argparse
-from hamstring import *
+from .hamstring import *
 
 
 def main():
@@ -59,12 +59,12 @@ def main():
                     and any(decode['nucleotide'] in s for s in barcodes)):
                 seq[:n] = list(decode['nucleotide'])
                 messg = 'corrected ' + decode['chksum'] + ' in read ' + record.name
-                print messg
+                print(messg)
             elif (args.strict and decode['chksum'] != 'ok'
                   and not any(decode['nucleotide'] in s for s in barcodes)):
                 seq[:n] = list('N' * len(barcode))
                 messg = 'discarded barcode ' + barcode + ' in read ' + record.name
-                print messg
+                print(messg)
             record.seq = ''.join(seq)
             out.write(record)
 

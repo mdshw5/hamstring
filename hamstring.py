@@ -28,8 +28,6 @@
 #- Implement fastq barcode error correction function (Done)
 #- Implement barcode mutation rate in simulation tool
 
-from __future__ import division
-
 
 class read(object):
     """
@@ -48,7 +46,7 @@ class read(object):
                               self.qual[key])
 
     def index(self):
-        return range(len(self.seq))
+        return list(range(len(self.seq)))
 
     def seqlen(self):
         return len(self.seq)
@@ -60,12 +58,12 @@ class read(object):
 
     def complement(self):
         """ Take the compliment of read.seq """
-        compseq = ''.join(map(lambda x: self.dict[x], self.seq))
+        compseq = ''.join([self.dict[x] for x in self.seq])
         return self.__class__(self.name, compseq, self.strand, self.qual)
 
     def revcomplement(self):
         """ Take the reverse compliment of read.seq """
-        revcompseq = ''.join(map(lambda x: self.dict[x], self.seq))[::-1]
+        revcompseq = ''.join([self.dict[x] for x in self.seq])[::-1]
         return self.__class__(self.name, revcompseq, self.strand,
                               self.qual[::-1])
 
@@ -185,7 +183,7 @@ def generateHamming(data, parity):
     elif parity != 3:
         raise ValueError("The parity argument must be 3 or 4.")
     ## substitute nucleotide for quaternary encoding
-    hN = map(lambda x: N[x], h4)
+    hN = [N[x] for x in h4]
     s4 = ''.join([str(i) for i in h4])
     sN = ''.join(hN)
     gc = percentGC(sN)
@@ -202,7 +200,7 @@ def percentGC(x):
     y = list(x)
     l = len(y)
     Q = {'A': 0, 'C': 1, 'G': 1, 'T': 0}
-    z = sum(map(lambda x: Q[x], y)) / l
+    z = sum([Q[x] for x in y]) / l
     return round(z, 2)
 
 
@@ -243,16 +241,16 @@ def decodeHamming(barcode, parity):
     if any('N' in s for s in hN):
         return {'nucleotide': str('N' * len(barcode)), 'chksum': 'bad'}
     else:
-        h4 = list(map(lambda x: Q[x], hN))
+        h4 = list([Q[x] for x in hN])
         p1 = sum([h4[i] for i in [0, 2, 4, 6]]) % d
         p2 = sum([h4[i] for i in [1, 2, 5, 6]]) % d
         p3 = sum([h4[i] for i in [3, 4, 5, 6]]) % d
         errType = max(p1, p2,
                       p3)  ## determine the type of error for later correction
         ## determine position of error
-        binErr = map(
+        binErr = list(map(
             smashBase,
-            [p3, p2, p1])  ## get the reversed "binary" version of parity bits
+            [p3, p2, p1]))  ## get the reversed "binary" version of parity bits
         errPos = int(''.join([str(i) for i in binErr]), 2)  ## error position
         chksum = 'ok'
         if errType != 0:
@@ -273,7 +271,7 @@ def decodeHamming(barcode, parity):
             if max(pp1, pp2, pp3, pp4) > 0:
                 return {'nucleotide': str('N' * len(barcode)), 'chksum': 'bad'}
             else:
-                hN = map(lambda x: N[x], h4)
+                hN = [N[x] for x in h4]
                 sN = ''.join([str(i) for i in hN])
                 chksum = ' '.join(
                     [N[sTrue], '>', N[sFalse], 'at pos',
