@@ -1,23 +1,33 @@
 language: python
 sudo: false
 python:
-    - 'nightly'
-    - '3.6'
-    - '3.5'
-    - '3.4'
-    - '3.3'
-    - '3.2'
-    - '2.7'
-    - '2.6'
-    - 'pypy'
-    - 'pypy3'
+- nightly
+- '3.6'
+- '3.5'
+- '3.4'
+- '3.3'
+- '3.2'
+- '2.7'
+- '2.6'
+- pypy
+- pypy3
 install:
-    - python setup.py install
+- python setup.py install
 script: python -m hamstring
+deploy:
+  provider: pypi
+  user: mdshw5
+  password:
+    secure: LG6qzLs3X6wqK9gvsip5pUEQZ3H/fpJeIvkPpMJdUfvACMBbTAujbvtoEQhmx7E3VXqKEf6fb8zs5bvj6RvDnp4DCoVfU47HcFbQFxnLqFH1KbauWGdAowrQEQuMBJGAM0d2PdhzryTjXGDROzLaatAyvhuBGa3KKEUF4wYyomY=
+  on:
+    all_branches: true
+    python: 3.6
+    tags: true
+    repo: mdshw5/hamstring
 matrix:
   allow_failures:
-    - python: 'nightly'
-    - python: 'pypy3'
-    - python: 'pypy'
-    - python: '2.6'
+  - python: nightly
+  - python: pypy3
+  - python: pypy
+  - python: '2.6'
   fast_finish: true
