@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mdshw5/hamstring.svg?branch=master)](https://travis-ci.org/mdshw5/hamstring)
+
 This python module generates, checks, and corrects quaternary Hamming barcodes. The theory for generating quaternary (DNA) Hamming barcodes comes from the publication [Bystrykh, L. V. (2012). Generalized DNA Barcode Design Based on Hamming Codes. PLoS ONE](http://www.plosone.org/article/info:doi/10.1371/journal.pone.0036852). Currently, the `hamstring` module only works with Hamming7,4 encoding, but may be generalized to other sizes of data and parity bits.
 
 [![Figure1 Bystrykh et al.](redist/figure1.png)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0036852#pone-0036852-g001)
