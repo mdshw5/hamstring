@@ -115,29 +115,33 @@ The core hamstring module has no external module dependencies and should run und
 `generateHamming(data,parity)` is used to generate DNA quaternary Hamming codes from list of quaternary digits *data* with *parity* number of parity bits.
 *example*:
 
-    hamstring.generateHamming([0,1,1,2],3)
-    {'base4': '1100112', 'nucleotide': 'CCAACCG', 'gc': 0.71}
+```python
+>>> generateHamming([0,1,1,2], 3)
+Barcode(base4='1100112', nucleotide='CCAACCG', gc=0.71)
 
-    hamstring.generateHamming([0,1,1,2],4)
-    {'base4': '11001122', 'nucleotide': 'CCAACCGG', 'gc': 0.75}
+>>> generateHamming([0,1,1,2], 4)
+Barcode(base4='11001122', nucleotide='CCAACCGG', gc=0.75)
+```
 
 `decodeHamming(barcode,parity)` is used to decode *barcode* nucleotide Hamming string with *parity* number of parity bits, and perform error correction if needed.
 *example*:
 
-    hamstring.decodeHamming('CCAACCG',3)
-    {'nucleotide': 'CCAACCG', 'chksum': 'ok'}
+```python
+>>> decodeHamming('CCAACCG', 3)
+CheckedBarcode(nucleotide='CCAACCG', chksum='ok')
 
-    hamstring.decodeHamming('CCAACCGG',4)
-    {'nucleotide': 'CCAACCGG', 'chksum': 'ok'}
+>>> decodeHamming('CCAACCGG', 4)
+CheckedBarcode(nucleotide='CCAACCGG', chksum='ok')
 
-    hamstring.decodeHamming('CCATCCG',3)
-    {'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
+>>> decodeHamming('CCATCCG', 3)
+CheckedBarcode(nucleotide='CCAACCG', chksum='A > T at pos 4')
 
-    hamstring.decodeHamming('CCATCCGG',4)
-    {'nucleotide': 'CCAACCGG', 'chksum': 'A > T at pos 4'}
+>>> decodeHamming('CCATCCGG', 4)
+CheckedBarcode(nucleotide='CCAACCGG', chksum='A > T at pos 4')
 
-    hamstring.decodeHamming('TCATCCGG',4)
-    {'nucleotide': 'NNNNNNNN', 'chksum': 'bad'}
+>>> decodeHamming('TCATCCGG', 4)
+CheckedBarcode(nucleotide='NNNNNNNN', chksum='bad')
+```
 
 ## Author
 

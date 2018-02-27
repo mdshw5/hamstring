@@ -29,6 +29,7 @@
 #- Implement barcode mutation rate in simulation tool
 
 from __future__ import division
+from collections import namedtuple
 
 
 class read(object):
@@ -164,11 +165,11 @@ def generateHamming(data, parity):
     data = quaternary number list
     parity = number of parity bits to implement
 
-    >>> generateHamming([0,1,1,2],3)
-    {'base4': '1100112', 'nucleotide': 'CCAACCG', 'gc': 0.71}
+    >>> generateHamming([0,1,1,2], 3)
+    Barcode(base4='1100112', nucleotide='CCAACCG', gc=0.71)
 
-    >>> generateHamming([0,1,1,2],4)
-    {'base4': '11001122', 'nucleotide': 'CCAACCGG', 'gc': 0.75}
+    >>> generateHamming([0,1,1,2], 4)
+    Barcode(base4='11001122', nucleotide='CCAACCGG', gc=0.75)
     """
     d = len(data)  ## number of coding bits
     if d != 4:
@@ -190,7 +191,7 @@ def generateHamming(data, parity):
     sN = ''.join(hN)
     gc = percentGC(sN)
     z = {'gc': gc, 'base4': s4, 'nucleotide': sN}
-    return z
+    return namedtuple('Barcode', z.keys())(**z)
 
 
 def percentGC(x):
@@ -219,20 +220,20 @@ def smashBase(x):
 def decodeHamming(barcode, parity):
     """ Decode nucleotide Hamming barcode sequence and perform error correction
 
-    >>> decodeHamming('CCAACCG',3)
-    {'nucleotide': 'CCAACCG', 'chksum': 'ok'}
+    >>> decodeHamming('CCAACCG', 3)
+    CheckedBarcode(nucleotide='CCAACCG', chksum='ok')
 
-    >>> decodeHamming('CCAACCGG',4)
-    {'nucleotide': 'CCAACCGG', 'chksum': 'ok'}
+    >>> decodeHamming('CCAACCGG', 4)
+    CheckedBarcode(nucleotide='CCAACCGG', chksum='ok')
 
-    >>> decodeHamming('CCATCCG',3)
-    {'nucleotide': 'CCAACCG', 'chksum': 'T to A at 4'}
+    >>> decodeHamming('CCATCCG', 3)
+    CheckedBarcode(nucleotide='CCAACCG', chksum='A > T at pos 4')
 
-    >>> decodeHamming('CCATCCGG',4)
-    {'nucleotide': 'CCAACCGG', 'chksum': 'A > T at pos 4'}
+    >>> decodeHamming('CCATCCGG', 4)
+    CheckedBarcode(nucleotide='CCAACCGG', chksum='A > T at pos 4')
 
-    >>> decodeHamming('TCATCCGG',4)
-    {'nucleotide': 'NNNNNNNN', 'chksum': 'bad'}
+    >>> decodeHamming('TCATCCGG', 4)
+    CheckedBarcode(nucleotide='NNNNNNNN', chksum='bad')
     """
     d = len(barcode) - parity
     if d != 4:
@@ -241,7 +242,7 @@ def decodeHamming(barcode, parity):
     Q = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
     N = {0: 'A', 1: 'C', 2: 'G', 3: 'T'}
     if any('N' in s for s in hN):
-        return {'nucleotide': str('N' * len(barcode)), 'chksum': 'bad'}
+        z = {'nucleotide': str('N' * len(barcode)), 'chksum': 'bad'}
     else:
         h4 = list([Q[x] for x in hN])
         p1 = sum([h4[i] for i in [0, 2, 4, 6]]) % d
@@ -271,17 +272,18 @@ def decodeHamming(barcode, parity):
             elif parity != 3:
                 raise ValueError("The parity argument must be 3 or 4.")
             if max(pp1, pp2, pp3, pp4) > 0:
-                return {'nucleotide': str('N' * len(barcode)), 'chksum': 'bad'}
+                z = {'nucleotide': str('N' * len(barcode)), 'chksum': 'bad'}
             else:
                 hN = [N[x] for x in h4]
                 sN = ''.join([str(i) for i in hN])
                 chksum = ' '.join(
                     [N[sTrue], '>', N[sFalse], 'at pos',
                      str(errPos)])
-                return {'nucleotide': sN, 'chksum': chksum}
+                z = {'nucleotide': sN, 'chksum': chksum}
 
         else:
-            return {'nucleotide': barcode, 'chksum': chksum}
+            z = {'nucleotide': barcode, 'chksum': chksum}
+    return namedtuple('CheckedBarcode', z.keys())(**z)
 
 
 if __name__ == "__main__":
