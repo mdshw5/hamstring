@@ -166,10 +166,10 @@ def generateHamming(data, parity):
     parity = number of parity bits to implement
 
     >>> generateHamming([0,1,1,2], 3)
-    Barcode(base4='1100112', nucleotide='CCAACCG', gc=0.71)
+    Barcode(base4='1100112', gc=0.71, nucleotide='CCAACCG')
 
     >>> generateHamming([0,1,1,2], 4)
-    Barcode(base4='11001122', nucleotide='CCAACCGG', gc=0.75)
+    Barcode(base4='11001122', gc=0.75, nucleotide='CCAACCGG')
     """
     d = len(data)  ## number of coding bits
     if d != 4:
@@ -191,7 +191,7 @@ def generateHamming(data, parity):
     sN = ''.join(hN)
     gc = percentGC(sN)
     z = {'gc': gc, 'base4': s4, 'nucleotide': sN}
-    return namedtuple('Barcode', z.keys())(**z)
+    return namedtuple('Barcode', sorted(z.keys()))(**z)
 
 
 def percentGC(x):
@@ -221,19 +221,19 @@ def decodeHamming(barcode, parity):
     """ Decode nucleotide Hamming barcode sequence and perform error correction
 
     >>> decodeHamming('CCAACCG', 3)
-    CheckedBarcode(nucleotide='CCAACCG', chksum='ok')
+    CheckedBarcode(chksum='ok', nucleotide='CCAACCG')
 
     >>> decodeHamming('CCAACCGG', 4)
-    CheckedBarcode(nucleotide='CCAACCGG', chksum='ok')
+    CheckedBarcode(chksum='ok', nucleotide='CCAACCGG')
 
     >>> decodeHamming('CCATCCG', 3)
-    CheckedBarcode(nucleotide='CCAACCG', chksum='A > T at pos 4')
+    CheckedBarcode(chksum='A > T at pos 4', nucleotide='CCAACCG')
 
     >>> decodeHamming('CCATCCGG', 4)
-    CheckedBarcode(nucleotide='CCAACCGG', chksum='A > T at pos 4')
+    CheckedBarcode(chksum='A > T at pos 4', nucleotide='CCAACCGG')
 
     >>> decodeHamming('TCATCCGG', 4)
-    CheckedBarcode(nucleotide='NNNNNNNN', chksum='bad')
+    CheckedBarcode(chksum='bad', nucleotide='NNNNNNNN')
     """
     d = len(barcode) - parity
     if d != 4:
@@ -283,7 +283,7 @@ def decodeHamming(barcode, parity):
 
         else:
             z = {'nucleotide': barcode, 'chksum': chksum}
-    return namedtuple('CheckedBarcode', z.keys())(**z)
+    return namedtuple('CheckedBarcode', sorted(z.keys()))(**z)
 
 
 if __name__ == "__main__":
