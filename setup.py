@@ -24,7 +24,7 @@ setup(
     url='http://mattshirley.com',
     description=
     'This python module generates, checks, and corrects quaternary Hamming barcodes.',
-    long_description=open('README.md', encoding='utf-8').read(),
+    long_description=open('Readme.md', encoding='utf-8').read(),
     license='BSD',
     scripts=[
         'scripts/checkBarcodes.py', 'scripts/fixFastq.py',
